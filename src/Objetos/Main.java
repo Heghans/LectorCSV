@@ -1,9 +1,10 @@
 package Objetos;
+import java.text.DecimalFormat;
 /**
  * La clase Main es la clase principal que contiene el método main para probar
  * las clases VentasLocal, VentasEntrega y VentasRetirar.
  */
-public class Main {
+public class AnalisisVentas {
 
     /**
      * Método principal que prueba las clases VentasLocal, VentasEntrega y VentasRetirar.
@@ -12,9 +13,11 @@ public class Main {
      */
     public static void main(String[] args) {
         // Rutas de los archivos CSV
-        String rutaCSVLocal = "C:\\Users\\josue\\OneDrive\\locales.csv";
-        String rutaCSVEntrega = "";  // Reemplaza con la ruta real
-        String rutaCSVRetirar = "";  // Reemplaza con la ruta real
+        String rutaCSVLocal = "C:\\Users\\josue\\Downloads\\ventas_en_local.csv";
+        String rutaCSVEntrega = "C:\\Users\\josue\\Downloads\\ventas_con_entrega.csv";
+        String rutaCSVRetirar = "C:\\Users\\josue\\Downloads\\ventas_para_retirar.csv";
+
+
 
         // Crear instancias de las clases VentasLocal, VentasEntrega y VentasRetirar
         VentasLocal ventasLocal = new VentasLocal();
@@ -26,14 +29,21 @@ public class Main {
         VentasEntrega.CalcularTotal(rutaCSVEntrega, ventasEntrega);
         VentasRetirar.CalcularTotal(rutaCSVRetirar, ventasRetirar);
 
+
+
         // Obtener totales de ventas
         double totalVentasRetirar = ventasRetirar.getTotalVentasRetirar();
         double totalVentasLocal = ventasLocal.getTotalVentasLocal();
         double totalVentasEntrega = ventasEntrega.getTotalVentasEntrega();
 
-        // Imprimir resultados
-        System.out.println("\nEl total de ventas locales es: " + totalVentasLocal);
-        System.out.println("\nEl total de ventas de entrega es: " + totalVentasEntrega);
-        System.out.println("\nEl total de ventas a retirar es: " + totalVentasRetirar);
+        // Funcion encargada de evitar tantos decimales
+        DecimalFormat df = new DecimalFormat("#.##");
+        String totalVentasLocalFormateado = df.format(totalVentasLocal);
+        String totalVentasEntregaFormateado = df.format(totalVentasEntrega);
+        String totalVentasRetirarFormateado = df.format(totalVentasRetirar);
+
+        
+        double totalfinal = totalVentasLocal + totalVentasRetirar + totalVentasEntrega;
+        System.out.println("\nTotal de ventas: " + totalfinal);
     }
 }
