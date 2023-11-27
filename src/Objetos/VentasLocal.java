@@ -1,5 +1,4 @@
 package Objetos;
-
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
@@ -10,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+
 public class VentasLocal extends Ventas {
 
     private double TotalVentasLocal;
@@ -23,9 +23,18 @@ public class VentasLocal extends Ventas {
     public static void CalcularTotal(String csvFilePath, VentasLocal ventasLocal) {
         // Actualiza las ventas locales sin imprimir el resultado aquí
         leerCSV(csvFilePath, ventasLocal);
+
+        // Imprime el total de ventas al final del proceso
+        System.out.println("\nEl total de ventas locales es: " + ventasLocal.getTotalVentasLocalFormateado());
+    }
+
+    private double getTotalVentasLocalFormateado() {
+        return TotalVentasLocal;
     }
 
     private static void leerCSV(String archivo, VentasLocal ventasLocal) {
+        double totalVentas = 0; // Variable para mantener el total de ventas
+
         try (CSVReader reader = new CSVReader(new FileReader(archivo))) {
             String[] nextLine;
             int filaActual = 0;
@@ -56,6 +65,9 @@ public class VentasLocal extends Ventas {
                             double costo = Double.parseDouble(costoStr);
                             double impuestos = Double.parseDouble(impuestosStr);
 
+                            // Suma el total de ventas
+                            totalVentas += totalVenta;
+
                             // Realiza los cálculos necesarios y actualiza TotalVentasLocal e ImpuestosPorVenta
                             ventasLocal.actualizarVentas(totalVenta, costo, impuestos);
                         }
@@ -67,12 +79,18 @@ public class VentasLocal extends Ventas {
                     System.err.println("Error de validación CSV en la fila " + filaActual + ": " + e.getMessage());
                 }
             }
+
+            // Asigna el total de ventas a la instancia de VentasLocal
+            ventasLocal.setTotalVentasLocal(totalVentas);
         } catch (IOException e) {
             // Maneja la excepción de entrada/salida
             e.printStackTrace();
         }
     }
 
+    public void setTotalVentasLocal(double totalVentas) {
+        this.TotalVentasLocal = totalVentas;
+    }
     private static LocalDate formatearFecha(String fechaStr, int fila) {
         // Elimina el carácter invisible al comienzo de la cadena
         fechaStr = fechaStr.replace("\uFEFF", "").replace("\u200B", "");
@@ -83,14 +101,16 @@ public class VentasLocal extends Ventas {
         }
 
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
             return LocalDate.parse(fechaStr, formatter);
         } catch (DateTimeParseException e) {
             System.err.println("Error al parsear la fecha en la fila " + fila + ": " + fechaStr);
+            System.err.println("Mensaje de error: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
+
 
 
     private static boolean esNumerico(String str) {
@@ -116,3 +136,4 @@ public class VentasLocal extends Ventas {
         return this.ImpuestosPorVenta;
     }
 }
+
