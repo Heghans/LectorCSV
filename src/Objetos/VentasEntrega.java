@@ -27,9 +27,15 @@ public class VentasEntrega extends Ventas {
     public static void CalcularTotal(String csvFilePath, VentasEntrega ventasEntrega) {
         // Actualiza las ventas de entrega sin imprimir el resultado aquí
         leerCSV(csvFilePath, ventasEntrega);
-    }
 
+        System.out.println("\nEl total de ventas de entrega es: " + ventasEntrega.getTotalVentasEntregaFormateado());
+    }
+    private double getTotalVentasEntregaFormateado() {
+        return TotalVentasEntrega;
+    }
     private static void leerCSV(String archivo, VentasEntrega ventasEntrega) {
+        double totalVentas = 0; // Variable para mantener el total de ventas
+
         try (CSVReader reader = new CSVReader(new FileReader(archivo))) {
             String[] nextLine;
             int filaActual = 0;
@@ -62,11 +68,11 @@ public class VentasEntrega extends Ventas {
                             double envio = Double.parseDouble(envioStr);
                             boolean entregado = Boolean.parseBoolean(entregadoStr);
 
+                            // Suma el total de ventas
+                            totalVentas += totalVenta;
+
                             // Realiza los cálculos necesarios y actualiza TotalVentasEntrega, EnviosPorVenta y EntregadoPorVenta
                             ventasEntrega.actualizarVentas(totalVenta, costo, envio, entregado, fecha);
-                        } else {
-                            // Manejar el caso en el que las cadenas no son numéricas
-                            System.err.println("Error: las cadenas no son numéricas en la fila " + filaActual + ": " + String.join(", ", nextLine));
                         }
                     } else {
                         System.err.println("Error: la fila " + filaActual + " no tiene suficientes columnas. Fila: " + String.join(", ", nextLine));
@@ -76,31 +82,38 @@ public class VentasEntrega extends Ventas {
                     System.err.println("Error de validación CSV en la fila " + filaActual + ": " + e.getMessage());
                 }
             }
+
+            // Asigna el total de ventas a la instancia de VentasEntrega
+            ventasEntrega.setTotalVentasEntrega(totalVentas);
         } catch (IOException e) {
             // Maneja la excepción de entrada/salida
             e.printStackTrace();
         }
     }
 
+    public void setTotalVentasEntrega(double totalVentas) {
+        this.TotalVentasEntrega = totalVentas;
+    }
     private static LocalDate formatearFecha(String fechaStr, int fila) {
         // Elimina el carácter invisible al comienzo de la cadena
         fechaStr = fechaStr.replace("\uFEFF", "").replace("\u200B", "");
 
         // Si la cadena es igual a "Fecha", retorna null
         if (fechaStr.trim().equalsIgnoreCase("Fecha")) {
-            System.err.println("Advertencia: Se encontró la cadena 'Fecha' en la fila " + fila + ". No es una fecha válida.");
             return null;
         }
 
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
             return LocalDate.parse(fechaStr, formatter);
         } catch (DateTimeParseException e) {
             System.err.println("Error al parsear la fecha en la fila " + fila + ": " + fechaStr);
+            System.err.println("Mensaje de error: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
+
 
     private static boolean esNumerico(String str) {
         try {
