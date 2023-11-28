@@ -11,17 +11,27 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * La clase VentasRetirar representa las ventas para retirar.
+ */
 public class VentasRetirar {
 
     private double TotalVentasRetirar;
     private List<String> EmpaquesPorVenta;
 
+    /**
+     * Constructor de la clase VentasRetirar. Inicializa la lista de empaques por venta.
+     */
     public VentasRetirar() {
-        // Constructor vacío
         EmpaquesPorVenta = new ArrayList<>();
     }
 
+    /**
+     * Método estático que calcula el total de ventas a retirar y muestra el resultado.
+     *
+     * @param csvFilePath Ruta del archivo CSV que contiene los datos de ventas a retirar.
+     * @param ventasRetirar Instancia de la clase VentasRetirar.
+     */
     public static void CalcularTotal(String csvFilePath, VentasRetirar ventasRetirar) {
         // Actualiza las ventas a retirar sin imprimir el resultado aquí
         leerCSV(csvFilePath, ventasRetirar);
@@ -29,16 +39,29 @@ public class VentasRetirar {
         // Imprime el total de ventas a retirar después de procesar el archivo CSV
         System.out.println("\nEl total de ventas a retirar es: " + ventasRetirar.getTotalVentasRetirarFormateado());
     }
+
+    /**
+     * Obtiene el total de ventas a retirar formateado como cadena.
+     *
+     * @return Total de ventas a retirar formateado.
+     */
     private double getTotalVentasRetirarFormateado() {
         return TotalVentasRetirar;
     }
 
+    /**
+     * Lee el archivo CSV y actualiza las ventas a retirar.
+     *
+     * @param archivo      Ruta del archivo CSV.
+     * @param ventasRetirar Instancia de la clase VentasRetirar.
+     */
     private static void leerCSV(String archivo, VentasRetirar ventasRetirar) {
         double totalVentas = 0; // Variable para mantener el total de ventas a retirar
 
         try (CSVReader reader = new CSVReader(new FileReader(archivo))) {
             String[] nextLine;
             int filaActual = 0;
+
             while (true) {
                 try {
                     // Intenta leer la siguiente línea
@@ -88,9 +111,22 @@ public class VentasRetirar {
         }
     }
 
+    /**
+     * Establece el total de ventas a retirar.
+     *
+     * @param totalVentas Total de ventas a retirar.
+     */
     private void setTotalVentasRetirar(double totalVentas) {
         this.TotalVentasRetirar = totalVentas;
     }
+
+    /**
+     * Formatea la fecha a partir de la cadena de fecha proporcionada.
+     *
+     * @param fechaStr Cadena de fecha.
+     * @param fila     Número de fila actual.
+     * @return Objeto LocalDate o null si hay un error al parsear la fecha.
+     */
     private static LocalDate formatearFecha(String fechaStr, int fila) {
         // Elimina el carácter invisible al comienzo de la cadena
         fechaStr = fechaStr.replace("\uFEFF", "").replace("\u200B", "");
@@ -111,7 +147,12 @@ public class VentasRetirar {
         }
     }
 
-
+    /**
+     * Verifica si una cadena es numérica.
+     *
+     * @param str Cadena a verificar.
+     * @return true si la cadena es numérica, false en caso contrario.
+     */
     private static boolean esNumerico(String str) {
         try {
             Double.parseDouble(str);
@@ -121,16 +162,33 @@ public class VentasRetirar {
         }
     }
 
+    /**
+     * Actualiza las ventas a retirar con los datos de una venta.
+     *
+     * @param totalVenta Total de la venta.
+     * @param costo      Costo de la venta.
+     * @param empaque    Tipo de empaque.
+     */
     public void actualizarVentas(double totalVenta, double costo, String empaque) {
         // Realiza los cálculos necesarios y actualiza TotalVentasRetirar y EmpaquesPorVenta
         this.TotalVentasRetirar += (totalVenta - costo);
         this.EmpaquesPorVenta.add(empaque);
     }
 
+    /**
+     * Obtiene el total de ventas a retirar.
+     *
+     * @return Total de ventas a retirar.
+     */
     public double getTotalVentasRetirar() {
         return this.TotalVentasRetirar;
     }
 
+    /**
+     * Obtiene la lista de empaques por venta.
+     *
+     * @return Lista de empaques por venta.
+     */
     public List<String> getEmpaquesPorVenta() {
         return this.EmpaquesPorVenta;
     }
