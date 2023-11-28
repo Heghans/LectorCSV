@@ -1,4 +1,5 @@
 package Objetos;
+
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
@@ -10,6 +11,9 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * La clase VentasEntrega representa las ventas con servicio de entrega.
+ */
 public class VentasEntrega extends Ventas {
 
     private double TotalVentasEntrega;
@@ -17,22 +21,44 @@ public class VentasEntrega extends Ventas {
     private List<Boolean> EntregadoPorVenta;
     private List<LocalDate> FechasEntrega;
 
+    /**
+     * Constructor de la clase VentasEntrega. Inicializa las listas para envíos, entregas y fechas de entrega.
+     */
     public VentasEntrega() {
-        // Constructor vacío
         EnviosPorVenta = new ArrayList<>();
         EntregadoPorVenta = new ArrayList<>();
         FechasEntrega = new ArrayList<>();
     }
 
+    /**
+     * Método estático que calcula el total de ventas con servicio de entrega y muestra el resultado.
+     *
+     * @param csvFilePath   Ruta del archivo CSV que contiene los datos de ventas con entrega.
+     * @param ventasEntrega  Instancia de la clase VentasEntrega.
+     */
     public static void CalcularTotal(String csvFilePath, VentasEntrega ventasEntrega) {
         // Actualiza las ventas de entrega sin imprimir el resultado aquí
         leerCSV(csvFilePath, ventasEntrega);
 
+        // Imprime el total de ventas de entrega al final del proceso
         System.out.println("\nEl total de ventas de entrega es: " + ventasEntrega.getTotalVentasEntregaFormateado());
     }
+
+    /**
+     * Obtiene el total de ventas con servicio de entrega formateado como cadena.
+     *
+     * @return Total de ventas con entrega formateado.
+     */
     private double getTotalVentasEntregaFormateado() {
         return TotalVentasEntrega;
     }
+
+    /**
+     * Lee el archivo CSV y actualiza las ventas con servicio de entrega.
+     *
+     * @param archivo         Ruta del archivo CSV.
+     * @param ventasEntrega   Instancia de la clase VentasEntrega.
+     */
     private static void leerCSV(String archivo, VentasEntrega ventasEntrega) {
         double totalVentas = 0; // Variable para mantener el total de ventas
 
@@ -91,9 +117,22 @@ public class VentasEntrega extends Ventas {
         }
     }
 
+    /**
+     * Establece el total de ventas con servicio de entrega.
+     *
+     * @param totalVentas Total de ventas con entrega.
+     */
     public void setTotalVentasEntrega(double totalVentas) {
         this.TotalVentasEntrega = totalVentas;
     }
+
+    /**
+     * Formatea la fecha a partir de la cadena de fecha proporcionada.
+     *
+     * @param fechaStr Cadena que representa la fecha.
+     * @param fila     Número de fila para mensajes de error.
+     * @return Objeto LocalDate que representa la fecha.
+     */
     private static LocalDate formatearFecha(String fechaStr, int fila) {
         // Elimina el carácter invisible al comienzo de la cadena
         fechaStr = fechaStr.replace("\uFEFF", "").replace("\u200B", "");
@@ -114,7 +153,12 @@ public class VentasEntrega extends Ventas {
         }
     }
 
-
+    /**
+     * Verifica si una cadena es numérica.
+     *
+     * @param str Cadena a verificar.
+     * @return true si la cadena es numérica, false de lo contrario.
+     */
     private static boolean esNumerico(String str) {
         try {
             Double.parseDouble(str);
@@ -124,26 +168,55 @@ public class VentasEntrega extends Ventas {
         }
     }
 
+    /**
+     * Actualiza las ventas con servicio de entrega.
+     *
+     * @param totalVenta Total de la venta.
+     * @param costo      Costo de la venta.
+     * @param envio      Costo del servicio de entrega.
+     * @param entregado  Indica si la venta fue entregada.
+     * @param fecha      Fecha de la entrega.
+     */
     public void actualizarVentas(double totalVenta, double costo, double envio, boolean entregado, LocalDate fecha) {
-        // Realiza los cálculos necesarios y actualiza TotalVentasEntrega, EnviosPorVenta y EntregadoPorVenta
-        this.TotalVentasEntrega += (totalVenta - costo);
+        // Realiza los cálculos necesarios y actualiza TotalVentasEntrega, EnviosPorVenta, EntregadoPorVenta y FechasEntrega
+        this.TotalVentasEntrega += (totalVenta - costo + envio);
         this.EnviosPorVenta.add(envio);
         this.EntregadoPorVenta.add(entregado);
         this.FechasEntrega.add(fecha);
     }
 
+    /**
+     * Obtiene el total de ventas con servicio de entrega.
+     *
+     * @return Total de ventas con entrega.
+     */
     public double getTotalVentasEntrega() {
         return this.TotalVentasEntrega;
     }
 
+    /**
+     * Obtiene la lista de costos de envío por venta.
+     *
+     * @return Lista de costos de envío por venta.
+     */
     public List<Double> getEnviosPorVenta() {
         return this.EnviosPorVenta;
     }
 
+    /**
+     * Obtiene la lista de entregas por venta.
+     *
+     * @return Lista de entregas por venta.
+     */
     public List<Boolean> getEntregadoPorVenta() {
         return this.EntregadoPorVenta;
     }
 
+    /**
+     * Obtiene la lista de fechas de entrega.
+     *
+     * @return Lista de fechas de entrega.
+     */
     public List<LocalDate> getFechasEntrega() {
         return this.FechasEntrega;
     }
