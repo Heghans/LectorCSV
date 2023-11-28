@@ -1,4 +1,5 @@
 package Objetos;
+
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
@@ -10,16 +11,27 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * La clase VentasLocal representa las ventas locales.
+ */
 public class VentasLocal extends Ventas {
 
     private double TotalVentasLocal;
     private List<Double> ImpuestosPorVenta;
 
+    /**
+     * Constructor de la clase VentasLocal. Inicializa la lista de impuestos por venta.
+     */
     public VentasLocal() {
-        // Constructor vacío
         ImpuestosPorVenta = new ArrayList<>();
     }
 
+    /**
+     * Método estático que calcula el total de ventas locales y muestra el resultado.
+     *
+     * @param csvFilePath Ruta del archivo CSV que contiene los datos de ventas locales.
+     * @param ventasLocal Instancia de la clase VentasLocal.
+     */
     public static void CalcularTotal(String csvFilePath, VentasLocal ventasLocal) {
         // Actualiza las ventas locales sin imprimir el resultado aquí
         leerCSV(csvFilePath, ventasLocal);
@@ -28,16 +40,28 @@ public class VentasLocal extends Ventas {
         System.out.println("\nEl total de ventas locales es: " + ventasLocal.getTotalVentasLocalFormateado());
     }
 
+    /**
+     * Obtiene el total de ventas locales formateado como cadena.
+     *
+     * @return Total de ventas locales formateado.
+     */
     private double getTotalVentasLocalFormateado() {
         return TotalVentasLocal;
     }
 
+    /**
+     * Lee el archivo CSV y actualiza las ventas locales.
+     *
+     * @param archivo      Ruta del archivo CSV.
+     * @param ventasLocal Instancia de la clase VentasLocal.
+     */
     private static void leerCSV(String archivo, VentasLocal ventasLocal) {
         double totalVentas = 0; // Variable para mantener el total de ventas
 
         try (CSVReader reader = new CSVReader(new FileReader(archivo))) {
             String[] nextLine;
             int filaActual = 0;
+
             while (true) {
                 try {
                     // Intenta leer la siguiente línea
@@ -88,9 +112,22 @@ public class VentasLocal extends Ventas {
         }
     }
 
+    /**
+     * Establece el total de ventas locales.
+     *
+     * @param totalVentas Total de ventas locales.
+     */
     public void setTotalVentasLocal(double totalVentas) {
         this.TotalVentasLocal = totalVentas;
     }
+
+    /**
+     * Formatea la fecha a partir de la cadena de fecha proporcionada.
+     *
+     * @param fechaStr Cadena de fecha.
+     * @param fila     Número de fila actual.
+     * @return Objeto LocalDate o null si hay un error al parsear la fecha.
+     */
     private static LocalDate formatearFecha(String fechaStr, int fila) {
         // Elimina el carácter invisible al comienzo de la cadena
         fechaStr = fechaStr.replace("\uFEFF", "").replace("\u200B", "");
@@ -111,8 +148,12 @@ public class VentasLocal extends Ventas {
         }
     }
 
-
-
+    /**
+     * Verifica si una cadena es numérica.
+     *
+     * @param str Cadena a verificar.
+     * @return true si la cadena es numérica, false en caso contrario.
+     */
     private static boolean esNumerico(String str) {
         try {
             Double.parseDouble(str);
@@ -122,18 +163,34 @@ public class VentasLocal extends Ventas {
         }
     }
 
+    /**
+     * Actualiza las ventas locales con los datos de una venta.
+     *
+     * @param totalVenta Total de la venta.
+     * @param costo      Costo de la venta.
+     * @param impuestos  Impuestos de la venta.
+     */
     public void actualizarVentas(double totalVenta, double costo, double impuestos) {
         // Realiza los cálculos necesarios y actualiza TotalVentasLocal e ImpuestosPorVenta
         this.TotalVentasLocal += (totalVenta - costo);
         this.ImpuestosPorVenta.add(impuestos);
     }
 
+    /**
+     * Obtiene el total de ventas locales.
+     *
+     * @return Total de ventas locales.
+     */
     public double getTotalVentasLocal() {
         return this.TotalVentasLocal;
     }
 
+    /**
+     * Obtiene la lista de impuestos por venta.
+     *
+     * @return Lista de impuestos por venta.
+     */
     public List<Double> getImpuestosPorVenta() {
         return this.ImpuestosPorVenta;
     }
 }
-
